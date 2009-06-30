@@ -11,7 +11,7 @@
 ;General
 
   ;Name and file
-  Name "Televideo 0.41"
+  Name "Televideo 0.42"
   OutFile "TelevideoInstaller.exe"
 
   ;Default installation folder
@@ -72,21 +72,21 @@ Section "!File del Programma" SecInstall
   SetOutPath "$INSTDIR"
   
   ;ADD YOUR OWN FILES HERE...
-  File "bz2.pyd"
-  File "library.zip"
-  File "PyQt4.QtCore.pyd"
-  File "PyQt4.QtGui.pyd"
-  File "PyQt4.QtNetwork.pyd"
-  File "python26.dll"
-  File "QtCore4.dll"
-  File "QtGui4.dll"
-  File "QtNetwork4.dll"
-  File "select.pyd"
-  File "sip.pyd"
-  File "televideo.exe"
-  File "unicodedata.pyd"
-  File "w9xpopen.exe"
-  File /r "icons"
+  File "..\dist\bz2.pyd"
+  File "..\dist\library.zip"
+  File "..\dist\PyQt4.QtCore.pyd"
+  File "..\dist\PyQt4.QtGui.pyd"
+  File "..\dist\PyQt4.QtNetwork.pyd"
+  File "..\dist\python26.dll"
+  File "..\dist\QtCore4.dll"
+  File "..\dist\QtGui4.dll"
+  File "..\dist\QtNetwork4.dll"
+  File "..\dist\select.pyd"
+  File "..\dist\sip.pyd"
+  File "..\dist\televideo.exe"
+  File "..\dist\unicodedata.pyd"
+  File "..\dist\w9xpopen.exe"
+  File /r "..\dist\icons"
   
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Televideo
     

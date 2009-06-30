@@ -6,7 +6,7 @@ setup(
     windows = [
         {
             "script": "televideo.py", 
-            "icon_resources": [(0, "televideo.ico")]
+            "icon_resources": [(0, "windows/televideo.ico")]
         }], options = 
             {   "py2exe":{"includes":["sip", "PyQt4"], 
                 "excludes":["pywin", "pywin.debugger", "pywin.debugger.dbgcon", "pywin.dialogs", "pywin.dialogs.list", "Tkconstants","Tkinter","tcl"]}
