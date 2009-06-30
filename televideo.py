@@ -12,7 +12,7 @@ from settings import MySettings
 class MainWindow(QtGui.QMainWindow):
     
     #version
-    version = QtCore.QString("0.41")
+    version = QtCore.QString("0.42")
     
     def __init__(self,  parent=None):
         QtGui.QMainWindow.__init__(self)
