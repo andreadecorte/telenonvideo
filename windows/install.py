@@ -1,4 +1,4 @@
-#C:\Programmi\Python26\python.exe "C:\Documents and Settings\Dree\Desktop\televideo"\install.py py2exe  
+#D:\Programmi\Python26\python.exe "C:\Documents and Settings\Andrea\Documenti\televideo"\install.py py2exe  
 from distutils.core import setup
 import py2exe
 

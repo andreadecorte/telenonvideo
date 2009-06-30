@@ -27,8 +27,12 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(dirTemp +"/icons/televideo.png"))
 
         self.progressBar = QtGui.QProgressBar()
+        self.stopButton = QtGui.QPushButton()
+        self.stopButton.setIcon(QtGui.QIcon(dirTemp +"/icons/stop.png"))
+        
         statusBar = QtGui.QStatusBar()
         statusBar.addPermanentWidget(self.progressBar)
+        statusBar.addPermanentWidget(self.stopButton)
         statusBar.setSizeGripEnabled(False)
         self.setStatusBar(statusBar)
         #check iniziale, se impostazioni vuote, aggiungo valori default
@@ -53,6 +57,9 @@ class MainWindow(QtGui.QMainWindow):
     def updateProgressBar(self, ricevuti,  totali):
         self.getProgressBar().setMaximum(totali)
         self.getProgressBar().setValue(ricevuti)
+    def getStopButton (self):
+        return self.stopButton
+    
     #azioni da eseguire prima della chiusura del programma
     def onClose(self):
         file = QtCore.QFile(http.getFileName())
@@ -119,6 +126,7 @@ class GestioneConnessione(QtNetwork.QHttp):
         if self.file.open():
             self.fileName = self.file.fileName()
         if window.statusBar().currentMessage() != 'page not found':
+            window.getStopButton().show()
             window.getProgressBar().show()
             window.statusBar().showMessage('downloading...')
         self.setHost(url.host(),  80)
@@ -151,6 +159,7 @@ class GestioneConnessione(QtNetwork.QHttp):
             window.statusBar().showMessage('done',  5000)
             window.updateProgressBar
             window.getProgressBar().hide()
+            window.getStopButton().hide()
         if error:
             if self.error() == QtNetwork.QHttp.HostNotFound:
                 #connessione assente
@@ -337,6 +346,7 @@ class Grafica(QtGui.QWidget):
              QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.CTRL  + QtCore.Qt.Key_H),  self.getSottopagina(), self.pagIniziale)
              QtGui.QShortcut(QtGui.QKeySequence.Refresh,  self.getSottopagina(), self.aggiorna)
              QtGui.QShortcut(QtGui.QKeySequence.Save,  self.getSottopagina(), self.salva)
+             QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Escape),  self.getSottopagina(), self.stop)
         
         def aggiornaPulsanti(self):
              self.customButton1.setTextWithCheck(settings.nomePagina1)
@@ -406,6 +416,9 @@ class Grafica(QtGui.QWidget):
             QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
         def salva(self):
             http.salvaPagina()
+        def stop(self):
+            http.abort()
+            window.statusBar().showMessage('Stopped')
 
 pathRelativo = QtCore.QDir.homePath().append("/.televideo")
 #per le opzioni, se false è nella stessa cartella del programma, se no in .config nella home
@@ -462,5 +475,7 @@ QtCore.QObject.connect(http,  QtCore.SIGNAL('responseHeaderReceived (const QHttp
 QtCore.QObject.connect(http,  QtCore.SIGNAL('done(bool)'), http.downloadFinito)
 QtCore.QObject.connect(http,  QtCore.SIGNAL('dataReadProgress (int, int)'), window.updateProgressBar)
 QtCore.QObject.connect(app,  QtCore.SIGNAL('aboutToQuit ()'), window.onClose)
+
+QtCore.QObject.connect(window.stopButton, QtCore.SIGNAL('clicked ()'), widget.stop)
 
 sys.exit(app.exec_())

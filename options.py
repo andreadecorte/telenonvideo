@@ -154,6 +154,10 @@ class OptionsWindow(QtGui.QDialog):
         layoutProxy.addWidget(self.userName,  2,  1,  1,  2)
         layoutProxy.addWidget(labelPassword,  3,  0)
         layoutProxy.addWidget(self.password,  3,  1,  1,  2)
+        
+        labelWarning = QtGui.QLabel("Attenzione: le impostazioni di questa scheda saranno applicate solo al riavvio")
+        labelWarning.setWordWrap(True)
+        layoutProxy.addWidget(labelWarning,  4,  0,  1,  3)
         self.tabs.addTab(pagProxy,  "Pro&xy")
         QtCore.QObject.connect(self.usaProxy, QtCore.SIGNAL('stateChanged (int)'), self.selezioneProxy)
         
@@ -175,6 +179,8 @@ class OptionsWindow(QtGui.QDialog):
         shortcuts14 = QtGui.QLabel("Ctrl S")
         shortcuts15 = QtGui.QLabel("Aggiorna pagina")
         shortcuts16 = QtGui.QLabel("F5")
+        shortcuts17 = QtGui.QLabel("Interrompi caricamento")
+        shortcuts18 = QtGui.QLabel("Esc")
         layout3 = QtGui.QGridLayout(pagShortcuts)
         layout3.addWidget(shortcuts1,  0,  0)
         layout3.addWidget(shortcuts2,  0,  1)
@@ -192,18 +198,20 @@ class OptionsWindow(QtGui.QDialog):
         layout3.addWidget(shortcuts14,  6,  1)
         layout3.addWidget(shortcuts15,  7,  0)
         layout3.addWidget(shortcuts16,  7,  1)
+        layout3.addWidget(shortcuts17,  8,  0)
+        layout3.addWidget(shortcuts18,  8,  1)
         self.tabs.addTab(pagShortcuts,  "Scorcia&toie")
         
         #about
         pagAbout = QtGui.QWidget()
-        about = QtGui.QLabel("<qt>Per applicare le impostazioni sul proxy riavviare il programma.\nScritto per cazzeggio da <a href='mailto:adecorte@gmail.com'>Klenje</a>.  Thanks a <i>elpibe</i> e <i>ildiavolo</i> per idee e betatesting<br /><br />Released under GPL2 or later; icone dai temi CrystalSVG e Tango di KDEmod<br /></qt>")
+        about = QtGui.QLabel("<qt>Scritto per cazzeggio da <a href='mailto:adecorte@gmail.com'>Andrea 'Klenje' Decorte</a>.  Thanks a <i>elpibe</i> e <i>ildiavolo</i> per idee e betatesting<br /><br />Released under GPL2 or later; icone dai temi CrystalSVG e Tango di KDEmod<br /><br /><a href='http://code.google.com/p/telenonvideo'>Sito ufficiale su Google Code</a></qt>")
         about.setFrameStyle(QtGui.QFrame.StyledPanel)
         about.setWordWrap(True)
         about.setAlignment(QtCore.Qt.AlignJustify)
         about.setOpenExternalLinks(True)
         layout2 = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight,  pagAbout)
         layout2.addWidget(about)
-        self.tabs.addTab(pagAbout,  "&About")
+        self.tabs.addTab(pagAbout, "&About")
         
         buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel,  QtCore.Qt.Horizontal)
         QtCore.QObject.connect(buttonBox, QtCore.SIGNAL('accepted()'), self.salvaOpzioni)
