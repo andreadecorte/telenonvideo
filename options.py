@@ -155,7 +155,7 @@ class OptionsWindow(QtGui.QDialog):
         layoutProxy.addWidget(labelPassword,  3,  0)
         layoutProxy.addWidget(self.password,  3,  1,  1,  2)
         
-        labelWarning = QtGui.QLabel("Attenzione: le impostazioni di questa scheda saranno applicate solo al riavvio")
+        labelWarning = QtGui.QLabel("<b>Attenzione</b>: le impostazioni di questa scheda saranno applicate solo al riavvio.<br />Se desideri usare il proxy definito nelle Opzioni di sistema, lascia deselezionato la casella Usa server proxy")
         labelWarning.setWordWrap(True)
         layoutProxy.addWidget(labelWarning,  4,  0,  1,  3)
         self.tabs.addTab(pagProxy,  "Pro&xy")

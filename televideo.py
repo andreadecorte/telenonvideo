@@ -12,7 +12,7 @@ from settings import MySettings
 class MainWindow(QtGui.QMainWindow):
     
     #version
-    version = QtCore.QString("0.42")
+    version = QtCore.QString("0.43")
     
     def __init__(self,  parent=None):
         QtGui.QMainWindow.__init__(self)
@@ -105,8 +105,13 @@ class GestioneConnessione(QtNetwork.QHttp):
         self.ultimaSottopaginaValida = 1
 
         #settaggio proxy
+        npq = QtNetwork.QNetworkProxyQuery(QtCore.QUrl("http://www.google.com"))
+        listOfProxies = QtNetwork.QNetworkProxyFactory.systemProxyForQuery(npq)
+        #print len(listOfProxies) 
         if settings.usaProxy == 2:
             self.setProxy(settings.hostProxy,  settings.portProxy,  settings.userNameProxy,  settings.passwordProxy)
+        else:
+            self.setProxy(listOfProxies[0])
         
         #segnali, qua perchè se no certe variabili non sono definite
         QtCore.QObject.connect(widget.buttonVai,  QtCore.SIGNAL('clicked ()'), self.preparaPagina)
@@ -165,6 +170,8 @@ class GestioneConnessione(QtNetwork.QHttp):
                 #connessione assente
                 window.statusBar().showMessage(http.errorString())
                 return
+            window.statusBar().showMessage(http.errorString())
+            return
         self.file.close()
         image = QtGui.QImage()
         image.load(self.fileName)

@@ -11,8 +11,8 @@
 ;General
 
   ;Name and file
-  Name "Televideo 0.42"
-  OutFile "TelevideoInstaller.exe"
+  Name "Televideo 0.43"
+  OutFile "TelevideoInstaller-0.43.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\Televideo"
@@ -86,6 +86,10 @@ Section "!File del Programma" SecInstall
   File "..\dist\televideo.exe"
   File "..\dist\unicodedata.pyd"
   File "..\dist\w9xpopen.exe"
+  File "..\Changelog.txt"
+  File "..\README"
+  File "..\COPYING"
+  File "televideo.ico"
   File /r "..\dist\icons"
   
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Televideo
@@ -147,6 +151,10 @@ Section "Uninstall"
   Delete $INSTDIR\televideo.exe
   Delete $INSTDIR\unicodedata.pyd
   Delete $INSTDIR\w9xpopen.exe
+  Delete $INSTDIR\Changelog.txt
+  Delete $INSTDIR\README
+  Delete $INSTDIR\COPYING
+  Delete $INSTDIR\televideo.ico
   RMDir /r $INSTDIR\icons
   
   Delete "$INSTDIR\Uninstall.exe"

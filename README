@@ -5,8 +5,8 @@
 Requirements:
  - Python
  - QT 4
- - PyQT4
- - Tested with Python 2.6 and PyQt 4.4.x, should work with later versions
+ - PyQT >= 4.5
+ - Tested with Python 2.6 and PyQt 4.5.1, should work with later versions
 
 --------------------------------------------------------------------
 This program is free software; you can redistribute it and/or modify
