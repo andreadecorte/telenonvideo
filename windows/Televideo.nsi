@@ -18,7 +18,7 @@
   InstallDir "$PROGRAMFILES\Televideo"
   
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  RequestExecutionLevel admin
   
 ;--------------------------------
 ;Variables
@@ -72,25 +72,25 @@ Section "!File del Programma" SecInstall
   SetOutPath "$INSTDIR"
   
   ;ADD YOUR OWN FILES HERE...
-  File "..\dist\bz2.pyd"
-  File "..\dist\library.zip"
-  File "..\dist\PyQt4.QtCore.pyd"
-  File "..\dist\PyQt4.QtGui.pyd"
-  File "..\dist\PyQt4.QtNetwork.pyd"
-  File "..\dist\python26.dll"
-  File "..\dist\QtCore4.dll"
-  File "..\dist\QtGui4.dll"
-  File "..\dist\QtNetwork4.dll"
-  File "..\dist\select.pyd"
-  File "..\dist\sip.pyd"
-  File "..\dist\televideo.exe"
-  File "..\dist\unicodedata.pyd"
-  File "..\dist\w9xpopen.exe"
-  File "..\Changelog.txt"
-  File "..\README"
-  File "..\COPYING"
+  File "bz2.pyd"
+  File "library.zip"
+  File "PyQt4.QtCore.pyd"
+  File "PyQt4.QtGui.pyd"
+  File "PyQt4.QtNetwork.pyd"
+  File "python26.dll"
+  File "QtCore4.dll"
+  File "QtGui4.dll"
+  File "QtNetwork4.dll"
+  File "select.pyd"
+  File "sip.pyd"
+  File "televideo.exe"
+  File "unicodedata.pyd"
+  File "w9xpopen.exe"
+  File "Changelog.txt"
+  File "README"
+  File "COPYING"
   File "televideo.ico"
-  File /r "..\dist\icons"
+  File /r "icons"
   
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Televideo
     
@@ -107,7 +107,7 @@ Section "!File del Programma" SecInstall
 SectionEnd
 
 Section /o "Icona sul desktop" SecDesktop
-  CreateShortcut "$DESKTOP\Televideo.lnk" "$INSTDIR\televideo.exe" "" "$INSTDIR\televideo.exe" 0
+  CreateShortcut "$DESKTOP\Televideo.lnk" "$INSTDIR\televideo.exe" "" "$INSTDIR\televideo.ico" 0
 SectionEnd
 
 ;--------------------------------
@@ -126,8 +126,8 @@ FunctionEnd
 
   ;Assign descriptions to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecInstall} "Installa i file necessari al funzionamento del programma."
-	!insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} "Crea un collegamento al Televideo sul desktop"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecInstall} "File necessari per il funzionamento del programma"
+	!insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} "Crea un collegamento al Televideo sul tuo Desktop"
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
  
