@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # options.py
 # finestra delle opzioni
-# Copyright (C) 2009 Andrea "Klenje" Decorte <adecorte@gmail.com>
+# Copyright (C) 2009-2010 Andrea "Klenje" Decorte <adecorte@gmail.com>
+# Released under the terms of the Gnu Public License 3 or later
 
 import sys
 from PyQt4 import QtGui,  QtCore
@@ -13,7 +14,7 @@ class OptionsWindow(QtGui.QDialog):
         QtGui.QWidget.__init__(self)
         self.settings = MySettings(relative)
         self.setWindowTitle("Televideo - Opzioni")
-        self.setFixedSize(300,  280)
+        self.setFixedSize(350,  280)
         #tab bar
         self.tabs = QtGui.QTabWidget(self)
         pag1 = QtGui.QWidget()
@@ -71,6 +72,15 @@ class OptionsWindow(QtGui.QDialog):
         layout.addWidget(self.edizione,  1,  1) 
         
         layout.addLayout(layoutRefresh,  3,  0,  1,  2)
+        
+        labelAzione = QtGui.QLabel("&Se pagina non trovata:")
+        self.azione= QtGui.QComboBox()
+        self.azione.addItem("Chiedi sempre")
+        self.azione.addItem("Rimani su pagina corrente")
+        self.azione.addItem("Cerca pagina successiva")
+        labelAzione.setBuddy(self.azione)
+        layout.addWidget(labelAzione,  4,  0)
+        layout.addWidget(self.azione,  4,  1) 
         
         self.tabs.addTab(pag1,  "&Opzioni")
         
@@ -231,6 +241,8 @@ class OptionsWindow(QtGui.QDialog):
         return self.edizionePredefinita
     def getEdizione(self):
         return self.edizione
+    def getAzione(self):
+        return self.azione
     def getNomePagina1(self):
         return self.name1
     def getNumeroPagina1(self):
@@ -288,6 +300,7 @@ class OptionsWindow(QtGui.QDialog):
              self.settings.nomePagina5 = self.getNomePagina5().text()
              self.settings.numeroPagina5 = self.getNumeroPagina5().value()
              self.settings.edizione = self.getEdizione().currentText()
+             self.settings.azionePaginaNonTrovata = self.getAzione().currentIndex()
              self.settings.usaProxy = self.getUsaProxy().checkState()
              self.settings.hostProxy = self.getHostProxy().text()
              self.settings.portProxy = self.getPortProxy().text()
@@ -317,6 +330,7 @@ class OptionsWindow(QtGui.QDialog):
         self.getNumeroPagina5().setValue(self.settings.numeroPagina5)
         indice = self.getEdizione().findText(self.settings.edizione)
         self.getEdizione().setCurrentIndex(indice)
+        self.getAzione().setCurrentIndex(self.settings.azionePaginaNonTrovata)
         if self.settings.usaProxy == 0:
              self.getUsaProxy().setCheckState(QtCore.Qt.Unchecked)
         elif self.settings.usaProxy == 2:

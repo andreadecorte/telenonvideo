@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # televideo.py
 # finestra principale
-# Copyright (C) 2009 Andrea "Klenje" Decorte <adecorte@gmail.com>
+# Copyright (C) 2009-2010 Andrea "Klenje" Decorte <adecorte@gmail.com>
+# Released under the terms of the Gnu Public License 3 or later
 
 import sys
 from PyQt4 import QtGui,  QtCore,  QtNetwork
@@ -12,7 +13,7 @@ from settings import MySettings
 class MainWindow(QtGui.QMainWindow):
     
     #version
-    version = QtCore.QString("0.43")
+    version = QtCore.QString("0.44")
     
     def __init__(self,  parent=None):
         QtGui.QMainWindow.__init__(self)
@@ -46,7 +47,7 @@ class MainWindow(QtGui.QMainWindow):
             settings.numeroPagina2 = 100
             settings.numeroPagina3 = 100
             settings.numeroPagina4 = 100
-            settings.numeroPagina5 = 100 
+            settings.numeroPagina5 = 100
     
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -189,19 +190,31 @@ class GestioneConnessione(QtNetwork.QHttp):
                 return
             if self.timer is not None:
                 self.timer.stop() #se no ricarica anche se viene visualizzata MessageBox
-            answer = QtGui.QMessageBox.question(widget,   "Pagina non trovata",  "Vuoi cercare la prossima pagina esistente?\nPremi no per rimanere sulla pagina corrente",  QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.Yes:
-                #cerca prossima pagina
-                self.ricercaInCorso = True
-                self.preparaPagina((widget.pagina.value())+1) 
-                return
-            else:
-                window.statusBar().clearMessage()        
-                window.statusBar().showMessage("page not found",  5000)
-                widget.getPagina().setValue(self.ultimaPaginaValida)
-                widget.getSottopagina().setValue(self.ultimaSottopaginaValida)
-                #preparaPagina(settings.pagIniziale)
-                return
+            if settings.azionePaginaNonTrovata == 0: #verifica l'opzione apposita, qui è su Chiedi sempre
+                answer = QtGui.QMessageBox.question(widget,   "Pagina non trovata",  "Vuoi cercare la prossima pagina esistente?\nPremi no per rimanere sulla pagina corrente",  QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+                if answer == QtGui.QMessageBox.Yes:
+                    #cerca prossima pagina
+                    self.ricercaInCorso = True
+                    self.preparaPagina((widget.pagina.value())+1) 
+                    return
+                else:
+                    window.statusBar().clearMessage()        
+                    window.statusBar().showMessage("page not found",  5000)
+                    widget.getPagina().setValue(self.ultimaPaginaValida)
+                    widget.getSottopagina().setValue(self.ultimaSottopaginaValida)
+                    #preparaPagina(settings.pagIniziale)
+                    return
+            elif settings.azionePaginaNonTrovata == 1: #rimanere su pagina corrente, non chiedere
+                    window.statusBar().clearMessage()        
+                    window.statusBar().showMessage("page not found",  5000)
+                    widget.getPagina().setValue(self.ultimaPaginaValida)
+                    widget.getSottopagina().setValue(self.ultimaSottopaginaValida)
+                    #preparaPagina(settings.pagIniziale)
+                    return
+            else: #vai a pagina successiva, non chiedere
+                    self.ricercaInCorso = True
+                    self.preparaPagina((widget.pagina.value())+1) 
+                    return
         self.ricercaInCorso = False #se arrivi qua, pagina trovata, rimetto False
         widget.getIndietro().setPaginaDesiderata((widget.pagina.value())-1)
         widget.getAvanti().setPaginaDesiderata((widget.pagina.value())+1)        
@@ -425,6 +438,9 @@ class Grafica(QtGui.QWidget):
             http.salvaPagina()
         def stop(self):
             http.abort()
+            #ripristino il valore della pagina su cui ero, visto che il caricamento è stato interrotto
+            self.getPagina().setValue(http.ultimaPaginaValida)
+            self.getSottopagina().setValue(http.ultimaSottopaginaValida)
             window.statusBar().showMessage('Stopped')
 
 pathRelativo = QtCore.QDir.homePath().append("/.televideo")

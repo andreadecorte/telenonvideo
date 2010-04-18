@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # settings.py
 # wrapper per salvataggio e caricamento impostazioni
-# Copyright (C) 2009 Andrea "Klenje" Decorte <adecorte@gmail.com>
+# Copyright (C) 2009-2010 Andrea "Klenje" Decorte <adecorte@gmail.com>
+# Released under the terms of the Gnu Public License 3 or later
 
 from PyQt4 import QtCore
 
@@ -53,6 +54,11 @@ class MySettings(QtCore.QSettings):
     def setEdizionePredefinita(self,  stato):
         self.setValue("edizionePredefinita",  QtCore.QVariant(stato))
     edizionePredefinita = property(getEdizionePredefinita,  setEdizionePredefinita)
+    def getAzionePaginaNonTrovata(self):
+        return self.value("azionePaginaNonTrovata").toInt()[0]
+    def setAzionePaginaNonTrovata(self,  azione):
+        self.setValue("azionePaginaNonTrovata",  QtCore.QVariant(azione))
+    azionePaginaNonTrovata= property(getAzionePaginaNonTrovata,  setAzionePaginaNonTrovata)
     
     def getRefreshAutomatico(self):
         return self.value("refreshAutomatico").toInt()[0]

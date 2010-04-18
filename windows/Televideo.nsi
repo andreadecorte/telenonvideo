@@ -11,8 +11,8 @@
 ;General
 
   ;Name and file
-  Name "Televideo 0.43"
-  OutFile "TelevideoInstaller-0.43.exe"
+  Name "Televideo 0.44"
+  OutFile "TelevideoInstaller-0.44.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\Televideo"
