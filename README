@@ -1,11 +1,10 @@
 ========== Televideo ==========
-(c) Copyright 2009 Andrea Decorte <adecorte@gmail.com>
-
+(c) Copyright 2009-2010 Andrea Decorte <adecorte@gmail.com>
 
 Requirements:
  - Python
- - QT 4
- - PyQT >= 4.5
+ - Qt 4
+ - PyQt >= 4.5
  - Tested with Python 2.6 and PyQt 4.5.1, should work with later versions
 
 --------------------------------------------------------------------

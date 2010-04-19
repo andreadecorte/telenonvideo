@@ -96,7 +96,7 @@ Section "!File del Programma" SecInstall
     
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-	CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Televideo.lnk" "$INSTDIR\televideo.exe"
+	CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Televideo.lnk" "$INSTDIR\televideo.exe" "" "$INSTDIR\televideo.ico" 0
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
   
 	!insertmacro MUI_STARTMENU_WRITE_END
