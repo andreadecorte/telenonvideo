@@ -6,12 +6,14 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
+  ;needed for GetSize
+  !include "FileFunc.nsh"
 
 ;--------------------------------
 ;General
 
   ;Name and file
-  Name "Televideo 0.44"
+  Name "Televideo"
   OutFile "TelevideoInstaller-0.44.exe"
 
   ;Default installation folder
@@ -19,6 +21,10 @@
   
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
+  
+  ;Set Compression level
+  SetCompressor /SOLID lzma
+  
   
 ;--------------------------------
 ;Variables
@@ -32,7 +38,6 @@
   !define MUI_FINISHPAGE
   !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\televideo.exe"
   !define MUI_TEXT_FINISH_SHOWREADME "Esegui Televideo"
-
 
 ;--------------------------------
 ;Pages
@@ -90,6 +95,8 @@ Section "!File del Programma" SecInstall
   File "README"
   File "COPYING"
   File "televideo.ico"
+  File "mingwm10.dll"
+  File "libgcc_s_dw2-1.dll"
   File /r "icons"
   
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Televideo
@@ -103,6 +110,24 @@ Section "!File del Programma" SecInstall
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+  
+  ;Write info on registry to add an entry to Add Remove Panel
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "DisplayName" "Televideo"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "Publisher" "Andrea Decorte"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "URLInfoAbout" "http://http://code.google.com/p/telenonvideo/"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "DisplayIcon" "$INSTDIR\televideo.ico"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "DisplayVersion" "0.44"
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+  IntFmt $0 "0x%08X" $0
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
+                 "EstimatedSize" "$0"				  
 
 SectionEnd
 
@@ -155,6 +180,8 @@ Section "Uninstall"
   Delete $INSTDIR\README
   Delete $INSTDIR\COPYING
   Delete $INSTDIR\televideo.ico
+  Delete $INSTDIR\mingwm10.dll
+  Delete $INSTDIR\libgcc_s_dw2-1.dll
   RMDir /r $INSTDIR\icons
   
   Delete "$INSTDIR\Uninstall.exe"
@@ -166,7 +193,10 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\$StartMenuFolder\Televideo.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
-  Delete "$DESKTOP\Televideo.lnk" 
+  Delete "$DESKTOP\Televideo.lnk"
+  
+  ;Delete key added on install
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo"  
 
 SectionEnd
 
