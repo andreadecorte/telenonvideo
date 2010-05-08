@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<AppInfo>
+  <Summary xml:lang="en">Italian RAI teletext viewer</Summary>
+  <Summary xml:lang="it">Visualizza il televideo RAI</Summary>
+  <About xml:lang="en">
+    <Purpose>Teletext viewer</Purpose>
+    <Version>0.44</Version>
+    <Authors>Andrea Decorte</Authors>
+    <License>GNU General Public License 3</License>
+    <Homepage>http://code.google.com/p/telenonvideo/</Homepage>
+  </About>
+  <About xml:lang="it">
+    <Purpose label="Scopo">visualizza televideo</Purpose>
+    <Version label="Versione"/>
+    <Authors label="Autore"/>
+    <License label="Licenza"/>
+    <Homepage label="Sito web"/>
+  </About>
+</AppInfo>

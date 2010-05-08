@@ -1,0 +1,14 @@
+File per il support a rox-filer forniti gentilmente da Yuri Bongiorno
+
+== Istruzioni ==
+se l'utente usa rox-filer, dopo aver scompattato il tuo programma, ci
+fa clic sopra la cartella che contiene il programma e il televideo
+viene avviato. Puoi spostare la cartella in un altro punto del disco
+e il televideo verrà sempre avviato facendoci clic sopra la cartella
+che lo contiene.
+
+Bisogna quindi creare un file .tgz che includa i 3 file di questa cartella e posizionarlo nella cartella del programma
+
+il file .DirIcon è un link a televideo.png (l'icona del programma)
+
+Ulteriori info: http://roscidus.com/desktop/AppDirs
