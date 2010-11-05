@@ -14,7 +14,7 @@
 
   ;Name and file
   Name "Televideo"
-  OutFile "TelevideoInstaller-0.44.exe"
+  OutFile "TelevideoInstaller-0.45.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\Televideo"
@@ -123,7 +123,7 @@ Section "!File del Programma" SecInstall
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
                  "DisplayIcon" "$INSTDIR\televideo.ico"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \
-                 "DisplayVersion" "0.44"
+                 "DisplayVersion" "0.45"
   ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
   IntFmt $0 "0x%08X" $0
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Televideo" \

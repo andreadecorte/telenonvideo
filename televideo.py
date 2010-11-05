@@ -13,7 +13,7 @@ from settings import MySettings
 class MainWindow(QtGui.QMainWindow):
     
     #version
-    version = QtCore.QString("0.44")
+    version = QtCore.QString("0.45")
     
     def __init__(self,  parent=None):
         QtGui.QMainWindow.__init__(self)
@@ -104,6 +104,7 @@ class GestioneConnessione(QtNetwork.QHttp):
         #queste 2 variabili così se pagina non trovata, posso recuperare quella precedente, in caso utente clicchi No
         self.ultimaPaginaValida = 100
         self.ultimaSottopaginaValida = 1
+	self.inAvanti = True #se sto andando in avanti o indietro, utile per cercare se pagina non trovata nella direzione corretta
 
         #settaggio proxy
         npq = QtNetwork.QNetworkProxyQuery(QtCore.QUrl("http://www.google.com"))
@@ -124,8 +125,8 @@ class GestioneConnessione(QtNetwork.QHttp):
         QtCore.QObject.connect(widget.customButton3,  QtCore.SIGNAL('vaiA'), self.preparaPagina)
         QtCore.QObject.connect(widget.customButton4,  QtCore.SIGNAL('vaiA'), self.preparaPagina)
         QtCore.QObject.connect(widget.customButton5,  QtCore.SIGNAL('vaiA'), self.preparaPagina) 
-        QtCore.QObject.connect(widget.indietro,  QtCore.SIGNAL('vaiA'), self.preparaPagina)
-        QtCore.QObject.connect(widget.avanti,  QtCore.SIGNAL('vaiA'), self.preparaPagina)
+        #QtCore.QObject.connect(widget.indietro,  QtCore.SIGNAL('vaiA'), self.preparaPagina)
+        #QtCore.QObject.connect(widget.avanti,  QtCore.SIGNAL('vaiA'), self.preparaPagina)
         QtCore.QObject.connect(widget.saveButton,  QtCore.SIGNAL('clicked ()'), self.salvaPagina)   
     
     def avviaDownload(self,  url):
@@ -138,10 +139,14 @@ class GestioneConnessione(QtNetwork.QHttp):
         self.setHost(url.host(),  80)
         httpGetId = self.get(url.path(),  self.file)
         
-    def preparaPagina(self,  paginaDiretta = None):
+    def preparaPagina(self,  paginaDiretta = None, avanti = None):
         #la prima pagina si chiama page-100.png, la seconda page-100.2.png
         #primo argomento edizione, secondo pagina, terzo sottopagina
         urlTemp = QtCore.QString("http://www.televideo.rai.it/televideo/pub/tt4web/%1/page-%2%3.png")
+
+        #se non è vuoto, aggiorno il valore di avanti, se no mantengo il precedente
+        if avanti is not None:
+	    self.inAvanti = avanti
         #questo parametro per caricare una pagina da un pulsante
         if paginaDiretta is not None:
             widget.getPagina().setValue(paginaDiretta)
@@ -186,7 +191,10 @@ class GestioneConnessione(QtNetwork.QHttp):
         
         if self.httpStatus == 404:
             if self.ricercaInCorso:
-                self.preparaPagina((widget.pagina.value())+1) #carico direttamente pagina successiva inutile richiedere
+                if self.inAvanti:
+                    self.preparaPagina((widget.pagina.value())+1, avanti = True) #carico direttamente pagina successiva inutile richiedere
+                else:
+                    self.preparaPagina((widget.pagina.value())-1, avanti = False) #carico direttamente pagina successiva inutile richiedere
                 return
             if self.timer is not None:
                 self.timer.stop() #se no ricarica anche se viene visualizzata MessageBox
@@ -195,7 +203,10 @@ class GestioneConnessione(QtNetwork.QHttp):
                 if answer == QtGui.QMessageBox.Yes:
                     #cerca prossima pagina
                     self.ricercaInCorso = True
-                    self.preparaPagina((widget.pagina.value())+1) 
+                    if self.inAvanti:
+                        self.preparaPagina((widget.pagina.value())+1, avanti = True)
+                    else:
+                        self.preparaPagina((widget.pagina.value())-1, avanti = False)
                     return
                 else:
                     window.statusBar().clearMessage()        
@@ -213,7 +224,12 @@ class GestioneConnessione(QtNetwork.QHttp):
                     return
             else: #vai a pagina successiva, non chiedere
                     self.ricercaInCorso = True
-                    self.preparaPagina((widget.pagina.value())+1) 
+                    if self.inAvanti:
+                        print("inAvanti")
+                        self.preparaPagina((widget.pagina.value())+1, avanti = True)
+                    else:
+                        print("indietro")
+                        self.preparaPagina((widget.pagina.value())-1, avanti=False)
                     return
         self.ricercaInCorso = False #se arrivi qua, pagina trovata, rimetto False
         widget.getIndietro().setPaginaDesiderata((widget.pagina.value())-1)
@@ -285,10 +301,12 @@ class Grafica(QtGui.QWidget):
              self.indietro = CustomButton()
              #self.indietro.setText('-')
              self.indietro.setIcon(QtGui.QIcon(dirTemp + "/icons/previous.png"))
+             self.indietro.setPaginaDesiderata(self.pagina.value()-1)
             
              self.avanti = CustomButton()
              #self.avanti.setText('+')
              self.avanti.setIcon(QtGui.QIcon(dirTemp + "/icons/next.png"))
+             self.avanti.setPaginaDesiderata(self.pagina.value()+1)
                           
              if sys.platform == "win32":
                 self.layoutSecondario.addWidget(self.indietro,  0,  2)
@@ -413,9 +431,9 @@ class Grafica(QtGui.QWidget):
             return self.customButton5
             
         def vaiIndietro(self):
-            http.preparaPagina((widget.pagina.value())-1)      
+            http.preparaPagina((widget.pagina.value())-1, avanti = False)      
         def vaiAvanti(self):
-            http.preparaPagina((widget.pagina.value())+1)
+            http.preparaPagina((widget.pagina.value())+1, avanti = True)
         def vaiButton1(self):
             self.getCustomButton1().emit(QtCore.SIGNAL('vaiA'),  self.getCustomButton1().paginaDesiderata)
         def vaiButton2(self):
@@ -500,8 +518,10 @@ QtCore.QObject.connect(http,  QtCore.SIGNAL('dataReadProgress (int, int)'), wind
 QtCore.QObject.connect(app,  QtCore.SIGNAL('aboutToQuit ()'), window.onClose)
 
 QtCore.QObject.connect(window.stopButton, QtCore.SIGNAL('clicked ()'), widget.stop)
+QtCore.QObject.connect(widget.indietro,  QtCore.SIGNAL('vaiA'), widget.vaiIndietro)
+QtCore.QObject.connect(widget.avanti,  QtCore.SIGNAL('vaiA'), widget.vaiAvanti)
 
-#brutto hack che serve perchè se salvo su registro la pagina 100 non me la crica al primo colpo
+#brutto hack che serve perchè se salvo su registro la pagina 100 non me la carica al primo colpo
 if settings.pagIniziale == 100 and relative:
 	widget.getCustomButton1().emit(QtCore.SIGNAL('vaiA'),  settings.pagIniziale)
 sys.exit(app.exec_())
