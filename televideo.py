@@ -472,7 +472,7 @@ if not testFile.isWritable():
         dir.mkpath(pathRelativo)
     workingPath.setCurrent(pathRelativo)
     relative = True
-    print("le immagine verranno memorizzate nella cartella .televideo della home")
+    print("le immagine verranno memorizzate nella cartella .televideo della home su Linux o nel Registro in Windows")
 
 settings = MySettings(relative)
 
@@ -501,4 +501,7 @@ QtCore.QObject.connect(app,  QtCore.SIGNAL('aboutToQuit ()'), window.onClose)
 
 QtCore.QObject.connect(window.stopButton, QtCore.SIGNAL('clicked ()'), widget.stop)
 
+#brutto hack che serve perchè se salvo su registro la pagina 100 non me la crica al primo colpo
+if settings.pagIniziale == 100 and relative:
+	widget.getCustomButton1().emit(QtCore.SIGNAL('vaiA'),  settings.pagIniziale)
 sys.exit(app.exec_())
