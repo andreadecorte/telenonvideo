@@ -82,7 +82,7 @@ Section "!File del Programma" SecInstall
   File "PyQt4.QtCore.pyd"
   File "PyQt4.QtGui.pyd"
   File "PyQt4.QtNetwork.pyd"
-  File "python26.dll"
+  File "python27.dll"
   File "QtCore4.dll"
   File "QtGui4.dll"
   File "QtNetwork4.dll"
@@ -97,6 +97,9 @@ Section "!File del Programma" SecInstall
   File "televideo.ico"
   File "mingwm10.dll"
   File "libgcc_s_dw2-1.dll"
+  File "msvcp90.dll"
+  File "SSLEAY32.dll"
+  File "LIBEAY32.dll"
   File /r "icons"
   
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Televideo
