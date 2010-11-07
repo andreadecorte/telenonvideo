@@ -85,8 +85,7 @@ class CustomButton(QtGui.QPushButton):
             self.setText(testo)
     def mousePressEvent(self, event):
         if self.text() == 'configura':
-            w = OptionsWindow(relative = relative,  tabPreferiti = True)
-            w.exec_()
+            self.emit(QtCore.SIGNAL('configuraPreferiti'), True)            
         else:
             self.emit(QtCore.SIGNAL('vaiA'),  self.paginaDesiderata)
 
@@ -353,18 +352,23 @@ class Grafica(QtGui.QWidget):
              self.customButton1 = CustomButton()
              self.customButton1.setTextWithCheck(settings.nomePagina1)
              self.customButton1.setPaginaDesiderata(settings.numeroPagina1)
+             QtCore.QObject.connect(self.customButton1, QtCore.SIGNAL('configuraPreferiti'), self.apriFinestraOpzioni)
              self.customButton2 = CustomButton()
              self.customButton2.setTextWithCheck(settings.nomePagina2)
              self.customButton2.setPaginaDesiderata(settings.numeroPagina2)
+             QtCore.QObject.connect(self.customButton2, QtCore.SIGNAL('configuraPreferiti'), self.apriFinestraOpzioni)       
              self.customButton3 = CustomButton()
              self.customButton3.setTextWithCheck(settings.nomePagina3)
              self.customButton3.setPaginaDesiderata(settings.numeroPagina3)
+             QtCore.QObject.connect(self.customButton3, QtCore.SIGNAL('configuraPreferiti ()'), self.apriFinestraOpzioni)       
              self.customButton4 = CustomButton()
              self.customButton4.setTextWithCheck(settings.nomePagina4)
              self.customButton4.setPaginaDesiderata(settings.numeroPagina4)
+             QtCore.QObject.connect(self.customButton4, QtCore.SIGNAL('configuraPreferiti'), self.apriFinestraOpzioni)
              self.customButton5 = CustomButton()
              self.customButton5.setTextWithCheck(settings.nomePagina5)
              self.customButton5.setPaginaDesiderata(settings.numeroPagina5)
+             QtCore.QObject.connect(self.customButton5, QtCore.SIGNAL('configuraPreferiti'), self.apriFinestraOpzioni)
              self.layout.addWidget(self.customButton1,  2,  0)
              self.layout.addWidget(self.customButton2,  2,  1)
              self.layout.addWidget(self.customButton3,  2,  2)
@@ -399,14 +403,14 @@ class Grafica(QtGui.QWidget):
              self.customButton5.setPaginaDesiderata(settings.numeroPagina5)
              self.homeButton.setPaginaDesiderata(settings.pagIniziale)
              
-        def apriFinestraOpzioni(self):
-            w = OptionsWindow(relative = relative)
+        def apriFinestraOpzioni(self, tabPreferiti = False):
+            w = OptionsWindow(relative = relative, tabPreferiti = tabPreferiti)
             w.exec_()
             #ricarica pag iniziale e aggiorno pulsanti con nuove opzioni
             self.aggiornaPulsanti()
             self.getPagina().setValue(settings.pagIniziale)
             QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
-            
+                
         def getPagina(self):
             return self.pagina
         def getSottopagina(self):
@@ -490,7 +494,7 @@ if not testFile.isWritable():
         dir.mkpath(pathRelativo)
     workingPath.setCurrent(pathRelativo)
     relative = True
-    print("le immagine verranno memorizzate nella cartella .televideo della home su Linux o nel Registro in Windows")
+    print("Non posso scrivere: le immagine verranno memorizzate nella cartella .televideo della home su Linux o nel Registro in Windows")
 
 settings = MySettings(relative)
 
