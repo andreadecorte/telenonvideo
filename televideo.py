@@ -408,8 +408,9 @@ class Grafica(QtGui.QWidget):
             w.exec_()
             #ricarica pag iniziale e aggiorno pulsanti con nuove opzioni
             self.aggiornaPulsanti()
-            self.getPagina().setValue(settings.pagIniziale)
-            QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
+            if not tabPreferiti:
+                self.getPagina().setValue(settings.pagIniziale)
+                QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
                 
         def getPagina(self):
             return self.pagina
