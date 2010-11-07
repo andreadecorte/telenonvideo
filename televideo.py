@@ -104,6 +104,7 @@ class GestioneConnessione(QtNetwork.QHttp):
         self.ultimaPaginaValida = 100
         self.ultimaSottopaginaValida = 1
 	self.inAvanti = True #se sto andando in avanti o indietro, utile per cercare se pagina non trovata nella direzione corretta
+        self.downloadInCorso = False #per disabilitare le azioni
 
         #settaggio proxy
         npq = QtNetwork.QNetworkProxyQuery(QtCore.QUrl("http://www.google.com"))
@@ -129,6 +130,7 @@ class GestioneConnessione(QtNetwork.QHttp):
         QtCore.QObject.connect(widget.saveButton,  QtCore.SIGNAL('clicked ()'), self.salvaPagina)   
     
     def avviaDownload(self,  url):
+        self.downloadInCorso = True
         if self.file.open():
             self.fileName = self.file.fileName()
         if window.statusBar().currentMessage() != 'page not found':
@@ -162,7 +164,7 @@ class GestioneConnessione(QtNetwork.QHttp):
          
     #funzione che wrappa caricaPagina, perché il parametro ha significato diverso e quindi lo buttiamo    
     def caricaSottopagina (self, temp):
-        self.preparaPagina()
+        self.preparaPagina(avanti = True)
         
     def downloadFinito(self, error):
         if window.statusBar().currentMessage() != 'page not found':
@@ -240,19 +242,26 @@ class GestioneConnessione(QtNetwork.QHttp):
         
         pixmap = QtGui.QPixmap.fromImage(image)
         widget.labelImage.setPixmap(pixmap)
+        self.downloadInCorso = False
     
     def analizzaHeader(self,  header):
         self.httpStatus = header.statusCode()
     def salvaPagina(self):
         #apre finestra per scegliere dove salvare il file
-        nomeDesiderato = QtGui.QFileDialog.getSaveFileName(widget,  "Scegli la posizione in cui salvare l'immagine",  "",  "Image files (*.png)")
+        nomeDesiderato = QtGui.QFileDialog.getSaveFileName(widget,  "Scegli la posizione in cui salvare l'immagine",  "televideo.png",  "Image files (*.png)")
         if not nomeDesiderato.isEmpty():
+            if (QtCore.QFile(nomeDesiderato)).exists():
+                QtCore.QFile(nomeDesiderato).remove()
             if not self.file.copy(nomeDesiderato):
                 QtGui.QMessageBox.critical(widget, "Errore",  "Impossibile salvare il file")
             else:
                 window.statusBar().showMessage('file salvato')
     def getFileName(self):
         return self.fileName
+    def isDownloadInCorso(self):
+        return self.downloadInCorso
+    def setDownloadFinito(self):
+        self.downloadInCorso = False #in caso utente prema stop
 
 class Grafica(QtGui.QWidget):
         def __init__(self):
@@ -406,11 +415,8 @@ class Grafica(QtGui.QWidget):
         def apriFinestraOpzioni(self, tabPreferiti = False):
             w = OptionsWindow(relative = relative, tabPreferiti = tabPreferiti)
             w.exec_()
-            #ricarica pag iniziale e aggiorno pulsanti con nuove opzioni
+            #aggiorno pulsanti con nuove opzioni
             self.aggiornaPulsanti()
-            if not tabPreferiti:
-                self.getPagina().setValue(settings.pagIniziale)
-                QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
                 
         def getPagina(self):
             return self.pagina
@@ -436,9 +442,11 @@ class Grafica(QtGui.QWidget):
             return self.customButton5
             
         def vaiIndietro(self):
-            http.preparaPagina((widget.pagina.value())-1, avanti = False)      
+            if not http.isDownloadInCorso():
+                http.preparaPagina((widget.pagina.value())-1, avanti = False)      
         def vaiAvanti(self):
-            http.preparaPagina((widget.pagina.value())+1, avanti = True)
+            if not http.isDownloadInCorso():
+                http.preparaPagina((widget.pagina.value())+1, avanti = True)
         def vaiButton1(self):
             self.getCustomButton1().emit(QtCore.SIGNAL('vaiA'),  self.getCustomButton1().paginaDesiderata)
         def vaiButton2(self):
@@ -454,13 +462,16 @@ class Grafica(QtGui.QWidget):
         def sottopaginaPrec(self):
             self.getSottopagina().setValue(self.getSottopagina().value()-1)
         def pagIniziale(self):
-            self.getPagina().setValue(settings.pagIniziale)
+            if not http.isDownloadInCorso():
+                self.getPagina().setValue(settings.pagIniziale)
         def aggiorna(self):
-            QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
+            if not http.isDownloadInCorso():
+                QtCore.QObject.emit(self.getButtonVai(),  QtCore.SIGNAL('clicked()'))
         def salva(self):
             http.salvaPagina()
         def stop(self):
             http.abort()
+            http.setDownloadFinito()
             #ripristino il valore della pagina su cui ero, visto che il caricamento è stato interrotto
             self.getPagina().setValue(http.ultimaPaginaValida)
             self.getSottopagina().setValue(http.ultimaSottopaginaValida)
@@ -488,7 +499,7 @@ else:
 #print(app.applicationDirPath())
 
 #questo se il programma è installato in una posizione non scrivibile, quindi le immagini le salva in una cartella della home
-testFile = QtCore.QFileInfo("settings.py")
+testFile = QtCore.QFileInfo("COPYING")
 if not testFile.isWritable():
     dir = QtCore.QDir(pathRelativo)
     if not dir.exists():
@@ -527,6 +538,6 @@ QtCore.QObject.connect(widget.indietro,  QtCore.SIGNAL('vaiA'), widget.vaiIndiet
 QtCore.QObject.connect(widget.avanti,  QtCore.SIGNAL('vaiA'), widget.vaiAvanti)
 
 #brutto hack che serve perchè se salvo su registro la pagina 100 non me la carica al primo colpo
-if settings.pagIniziale == 100 and relative:
+if settings.pagIniziale == 100:
 	widget.getCustomButton1().emit(QtCore.SIGNAL('vaiA'),  settings.pagIniziale)
 sys.exit(app.exec_())

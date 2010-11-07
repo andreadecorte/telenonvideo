@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python /usr/lib/python2.6/site-packages/televideo/televideo.py
+python /usr/lib/python2.7/site-packages/televideo/televideo.py
